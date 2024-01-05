@@ -63,7 +63,7 @@ a [cookiecutter template](https://github.com/cookiecutter/cookiecutter) for gett
 started with Machine Learning Operations (MLOps).
 
 
-Building the docker container from the trainer.dockerfile:
+Building the docker image from the trainer.dockerfile:
 ```
 docker build -f trainer.dockerfile . -t trainer:latest
 ```
@@ -83,7 +83,7 @@ Mounting a volume is preferred over the above, and is done by the below. Dependi
 ```
 docker run --name {container_name} -v %cd%/models:/models/ trainer:latest
 ```
-And example of mounting multiple files was done using the predict.dockerfile, which was built and the following:
+And example of mounting multiple files was done using the predict.dockerfile, which image was built and the following container ran:
 ```
 docker run --name predict --rm -v %cd%/models/trained_model_50_1e-03.pt:/models/trained_model_50_1e-03.pt -v %cd%/data/testloader.pt:/testloader.pt predict:latest evaluate trained_model_50_1e-03.pt
 ```
