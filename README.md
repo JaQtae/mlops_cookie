@@ -61,3 +61,31 @@ The directory structure of the project looks like this:
 Created using [mlops_template](https://github.com/SkafteNicki/mlops_template),
 a [cookiecutter template](https://github.com/cookiecutter/cookiecutter) for getting
 started with Machine Learning Operations (MLOps).
+
+
+Building the docker container from the trainer.dockerfile:
+```
+docker build -f trainer.dockerfile . -t trainer:latest
+```
+Running an experiment in the container:
+```
+docker run --name experiment1 trainer:latest
+```
+Starting an interactive session in the container with shell (can use bash as well). Note, this opens a new container, and isn't a equivalent to mounting, ie. files are not transferred. Only for structural idea of container:
+```
+docker run -it --entrypoint sh {image_name}:{tag}
+```
+Copying files (if not just a mount):
+```
+docker cp {container_name}:{dir_path}/{file_name} {local_dir_path}/{local_file_name}
+```
+Mounting a volume is preferred over the above, and is done by the below. Depending on the OS, this may change from %cd& to $pwd or {$PWD}, see https://stackoverflow.com/questions/41485217/mount-current-directory-as-a-volume-in-docker-on-windows-10:
+```
+docker run --name {container_name} -v %cd%/models:/models/ trainer:latest
+```
+And example of mounting multiple files was done using the predict.dockerfile, which was built and the following:
+```
+docker run --name predict --rm -v %cd%/models/trained_model_50_1e-03.pt:/models/trained_model_50_1e-03.pt -v %cd%/data/testloader.pt:/testloader.pt predict:latest evaluate trained_model_50_1e-03.pt
+```
+So we run the container remotely, mount the appropriate files, and use the built docker container we've established, then the python code to execute on the remote terminal.
+
